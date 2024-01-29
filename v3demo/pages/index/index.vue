@@ -1,9 +1,10 @@
 <template>
 	<view class="content">
-		<image class="logo" src="/static/logo.png" @click="onClick"></image>
+		<image class="logo" src="/static/logo.png" @click="onClick('/pages/render/render')"></image>
 		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view>
+		<image class="logo" src="/static/logo.png" @click="onClick('/pages/three/three')"></image>
 	</view>
 </template>
 
@@ -13,9 +14,9 @@
 	
 	const title = ref(dayjs(new Date()).format('DD/MM/YYYY'));
 	
-	const onClick = () => {
+	const onClick = (url) => {
 		uni.navigateTo({
-			url: '/pages/three/three'
+			url: url
 		})
 	}
 </script>

@@ -45,7 +45,7 @@
 				renderer.domElement.style.top = '0';
 				// renderer.domElement.style.zIndex = '100';
 				renderer.domElement.style.left = '0';
-				// rootView.value.$el.appendChild( renderer.domElement );
+				rootView.value.$el.appendChild( renderer.domElement );
 				console.log('de', renderer.domElement);
 			}
 		});

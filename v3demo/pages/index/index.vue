@@ -8,8 +8,9 @@
 </template>
 
 <script setup>
-	import {ref} from 'vue';
-	const title = ref('aaaaa');
+	import dayjs from 'dayjs';
+import {ref} from 'vue';
+	const title = ref(dayjs(new Date()).format('DD/MM/YYYY'));
 </script>
 
 <style>

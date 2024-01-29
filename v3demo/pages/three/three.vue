@@ -1,7 +1,7 @@
 <template>
-	<view>
-		<!-- :<name>传参 :change:info="通知变更，固定格式" -->
-		<view :info="info" :change:info="three3d.render3d">渲染</view>
+	<!-- :<name>传参 :change:info="通知变更，固定格式" -->
+	<!-- 这种传参的形式很怪异，事件和属性挂在随便一个不相干的元素上 -->
+	<view :info="info" :change:info="three3d.render3d">
 		<view @tap="three3d.callFor3d">点击</view>
 	</view>
 </template>
@@ -29,6 +29,13 @@
 	const forThree3d = (data) => {
 		console.log('da', data);
 	}
+	defineExpose({
+		forThree3d,
+	});
+</script>
+
+<script>
+	
 </script>
 
 <script module="three3d" lang="renderjs">
@@ -78,8 +85,8 @@
 				document.body.appendChild( renderer.domElement );
 			},
 			callFor3d(event, ownerInstance) {
-				console.log('aaa');
-				ownerInstance.callMethod('forThree3d', { content: 'test' });
+				const r = ownerInstance.callMethod('forThree3d', { content: 'test' });
+				console.log('aaa', r);
 			}
 		},
 		created() {

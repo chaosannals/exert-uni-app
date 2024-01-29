@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
+		<image class="logo" src="/static/logo.png" @click="onClick"></image>
 		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view>
@@ -9,8 +9,15 @@
 
 <script setup>
 	import dayjs from 'dayjs';
-import {ref} from 'vue';
+	import {ref} from 'vue';
+	
 	const title = ref(dayjs(new Date()).format('DD/MM/YYYY'));
+	
+	const onClick = () => {
+		uni.navigateTo({
+			url: '/pages/three/three'
+		})
+	}
 </script>
 
 <style>

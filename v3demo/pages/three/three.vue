@@ -1,55 +1,34 @@
 <template>
-	<view ref="rootView">
-		
+	<view>
+		<!-- :<name>传参 :change:info="通知变更，固定格式" -->
+		<view :info="info" :change:info="three3d.render3d">渲染</view>
+		<view @tap="three3d.callFor3d">点击</view>
 	</view>
 </template>
 
 <script setup>
-	// 直接引入 three.js ，只能 web 。
+	import {onMounted, reactive, ref} from 'vue';
 	
-	import {onMounted, ref} from 'vue';
-	// import * as THREE from 'three';
+	const info = reactive({
+		width: 0,
+		height: 0,
+	});
 	
-	// const rootView = ref();
+	onMounted(() => {
+		uni.getSystemInfo({
+			success: function(res) {
+				info.width = res.windowWidth
+				info.height = res.windowHeight;
+				console.log('start', info);
+			}
+		});
+	});
 	
-	// onMounted(() => {
-	// 	uni.getSystemInfo({
-	// 		success: function(res) {
-	// 			const width = res.windowWidth
-	// 			const height = res.windowHeight;
-	// 			console.log('start', width, height);
-				
-	// 			// init
-	// 			const camera = new THREE.PerspectiveCamera( 70, width / height, 0.01, 10 );
-	// 			camera.position.z = 1;
-				
-	// 			const scene = new THREE.Scene();
-				
-	// 			const geometry = new THREE.BoxGeometry( 0.2, 0.2, 0.2 );
-	// 			const material = new THREE.MeshNormalMaterial();
-				
-	// 			const mesh = new THREE.Mesh( geometry, material );
-	// 			scene.add( mesh );
-	// 			console.log('add mesh', rootView.value);
-				
-	// 			const renderer = new THREE.WebGLRenderer( { antialias: true } );
-	// 			console.log('render');
-	// 			renderer.setSize( width, height );
-	// 			renderer.setAnimationLoop( ( time ) => {
-	// 				// console.log('nnn')
-	// 				mesh.rotation.x = time / 2000;
-	// 				mesh.rotation.y = time / 1000;
-	// 				renderer.render( scene, camera );
-	// 			});
-	// 			renderer.domElement.style.position = 'absolute';
-	// 			renderer.domElement.style.top = '0';
-	// 			// renderer.domElement.style.zIndex = '100';
-	// 			renderer.domElement.style.left = '0';
-	// 			rootView.value.$el.appendChild( renderer.domElement );
-	// 			console.log('de', renderer.domElement);
-	// 		}
-	// 	});
-	// });
+	// vue3 下面 renderjs 无法通过 ownerInstance.callMethod 调用到
+	// vue2 通过 methods 就可以。
+	const forThree3d = (data) => {
+		console.log('da', data);
+	}
 </script>
 
 <script module="three3d" lang="renderjs">
@@ -63,8 +42,12 @@
 			}
 		},
 		methods: {
-			render3d(width, height) {
-				console.log('start', width, height);
+			// 参数固定形式
+			render3d(newValue, oldValue, ownerInstance, instance) {
+				console.log('start', newValue, oldValue);
+				
+				const width = newValue.width;
+				const height = newValue.height;
 				
 				// init
 				const camera = new THREE.PerspectiveCamera( 70, width / height, 0.01, 10 );
@@ -93,12 +76,14 @@
 				// renderer.domElement.style.zIndex = '100';
 				renderer.domElement.style.left = '0';
 				document.body.appendChild( renderer.domElement );
+			},
+			callFor3d(event, ownerInstance) {
+				console.log('aaa');
+				ownerInstance.callMethod('forThree3d', { content: 'test' });
 			}
 		},
 		created() {
-			const width = window.innerWidth;
-			const height = window.innerHeight;
-			this.render3d(width, height);
+			//
 		}
 	};
 </script>

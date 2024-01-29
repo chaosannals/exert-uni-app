@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view>aaa</view>
+		<view @click="renderDemo.callThree3d">aaa</view>
 	</view>
 </template>
 
@@ -14,7 +14,9 @@
 			}
 		},
 		methods: {
-			
+			forThree3d(data) {
+				console.log('data', data);
+			}
 		},
 		onShow() {
 			// uni.getSystemInfo({
@@ -29,7 +31,7 @@
 	}
 </script>
 
-<script module="render3d" lang="renderjs">
+<script module="renderDemo" lang="renderjs">
 	console.log('render: renderjs');
 	
 	import * as THREE from 'three';
@@ -71,6 +73,10 @@
 				// renderer.domElement.style.zIndex = '100';
 				renderer.domElement.style.left = '0';
 				document.body.appendChild( renderer.domElement );
+			},
+			callThree3d(event, ownerInstance) {
+				console.log('aaa');
+				ownerInstance.callMethod('forThree3d', { content: 'test' });
 			}
 		},
 		created() {

@@ -1,22 +1,22 @@
 <template>
 	<view>
-		
+		测试插件
 	</view>
 </template>
 
 <script>
-// 	<script lang="renderjs"> 
-// renderjs 只支持 vue2 ，不支持 vue3
 	export default {
 		data() {
 			return {
 				
-			}
+			};
 		},
-		methods: {
-			
-		},
-		mounted() {
+		onLoad() {
+			let fonts = []
+			let obj = {}
+			fonts.forEach(v=>{
+				obj[v.name] = '\\u'+v.unicode
+			})
 		}
 	}
 </script>

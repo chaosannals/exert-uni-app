@@ -116,11 +116,11 @@
 				const geometry = new TextGeometry( 'Hello three.js!', {
 					font: font, // 字体
 					size: 4, // 大小
-					height: 0.05, // 挤出厚度
+					height: 0.01, // 挤出厚度
 					curveSegments: 2, // 曲线上点数量
 					bevelEnabled: true, // 斜角
 					bevelThickness: 1,  // 斜角深度
-					bevelSize: 0.08, // 斜角与原始轮廓距离，粗细
+					bevelSize: 0.01, // 斜角与原始轮廓距离，粗细
 					bevelSegments: 1, // 斜角分段数
 				} );
 				const material = new THREE.MeshBasicMaterial( { color: 0xFF0000 } );
@@ -128,6 +128,7 @@
 				text.position.x = 1;
 				text.position.y = 1;
 				text.position.z = 2;
+				text.rotation.x = 1.57;
 				scene.add( text );
 				console.log('add text');
 				
@@ -139,25 +140,59 @@
 				renderer.domElement.style.left = '0';
 				const cameraInfo = {};
 				renderer.domElement.addEventListener('mousedown', (event) => {
-					console.log('threejs mousedown', event);
+					// console.log('threejs mousedown', event);
 					cameraInfo.x = event.clientX;
 					cameraInfo.y = event.clientY;
 					cameraInfo.able = true;
 				}, false);
+				renderer.domElement.addEventListener('touchstart', (event) => {
+					cameraInfo.able = true;
+					if (event.targetTouches.length == 1) {
+						const touch = event.targetTouches[0];
+						cameraInfo.x = touch.clientX;
+						cameraInfo.y = touch.clientY;
+					}
+					if (event.targetTouches.length == 2) {
+						const touch1 = event.targetTouches[0];
+						const touch2 = event.targetTouches[1];
+						cameraInfo.z = camera.position.z;
+						cameraInfo.zD = Math.sqrt(Math.pow(touch1.clientX - touch2.clientX,2) + Math.pow(touch1.clientY - touch2.clientY, 2));
+					}
+				}, false);
 				renderer.domElement.addEventListener('mousemove', (event) => {
 					if (cameraInfo.able) {
 						// console.log('threejs mousemove', event);
-						camera.position.x -= (event.clientX - cameraInfo.x) / 100;
-						camera.position.y += (event.clientY - cameraInfo.y) / 100;
+						camera.position.x -= (event.clientX - cameraInfo.x) / 100 * camera.position.z * 0.1;
+						camera.position.y += (event.clientY - cameraInfo.y) / 100 * camera.position.z * 0.1;
 						cameraInfo.x = event.clientX;
 						cameraInfo.y = event.clientY;
+					}
+				}, false);
+				renderer.domElement.addEventListener('touchmove', (event) => {
+					if (!cameraInfo.able) {
+						return;
+					}
+					if (event.targetTouches.length == 1) {
+						const touch = event.targetTouches[0];
+						camera.position.x -= (touch.clientX - cameraInfo.x) / 50 * camera.position.z * 0.1;
+						camera.position.y += (touch.clientY - cameraInfo.y) / 50 * camera.position.z * 0.1;
+						cameraInfo.x = touch.clientX;
+						cameraInfo.y = touch.clientY;
+					}
+					if (event.targetTouches.length == 2) {
+						const touch1 = event.targetTouches[0];
+						const touch2 = event.targetTouches[1];
+						const zD = Math.sqrt(Math.pow(touch1.clientX - touch2.clientX,2) + Math.pow(touch1.clientY - touch2.clientY, 2))
+						camera.position.z = cameraInfo.z + (zD - cameraInfo.zD) * 0.1;
+						console.log('z', cameraInfo.z, cameraInfo.zD);
 					}
 				}, false);
 				renderer.domElement.addEventListener('mouseup', (event) => {
 					// console.log('threejs mouseup', event);
 					cameraInfo.able = false;
-					camera.position.x += (event.clientX - cameraInfo.x) / 100;
-					camera.position.y += (event.clientY - cameraInfo.y) / 100;
+				}, false);
+				renderer.domElement.addEventListener('touchend', (event) => {
+					cameraInfo.able = false;
 				}, false);
 				renderer.domElement.addEventListener('mousewheel', (event) => {
 					// console.log('threejs mousewheel', event);
@@ -166,15 +201,18 @@
 				
 				document.body.appendChild( renderer.domElement );
 				
-				for (var i = 0; i < 20; ++i) {
-					const color = 0x00ff00 + i * 0xf;
-					const geometry = new THREE.BoxGeometry( 1, 0.5, 1 );
-					const material = new THREE.MeshBasicMaterial( { color: color } );
-					const cube = new THREE.Mesh( geometry, material );
-					cube.position.x = i * 2;
-					cube.position.y = 0;
-					cube.position.z = 0;
-					scene.add( cube );
+				for (var j = 0; j < 20; ++j) {
+					for (var i = 0; i < 20; ++i) {
+						// const color = 0x00ff00 + i * 0x1 + j * 0x10;
+						const color = 0x0000ff;
+						const geometry = new THREE.BoxGeometry( 1, 0.5, 1 );
+						const material = new THREE.MeshBasicMaterial( { color: color } );
+						const cube = new THREE.Mesh( geometry, material );
+						cube.position.x = i * 2;
+						cube.position.y = j * 2;
+						cube.position.z = 0;
+						scene.add( cube );
+					}
 				}
 				
 				camera.position.z = 20;

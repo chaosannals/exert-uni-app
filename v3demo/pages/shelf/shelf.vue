@@ -146,7 +146,7 @@
 				}, false);
 				renderer.domElement.addEventListener('mousemove', (event) => {
 					if (cameraInfo.able) {
-						console.log('threejs mousemove', event);
+						// console.log('threejs mousemove', event);
 						camera.position.x -= (event.clientX - cameraInfo.x) / 100;
 						camera.position.y += (event.clientY - cameraInfo.y) / 100;
 						cameraInfo.x = event.clientX;
@@ -154,15 +154,19 @@
 					}
 				}, false);
 				renderer.domElement.addEventListener('mouseup', (event) => {
-					console.log('threejs mouseup', event);
+					// console.log('threejs mouseup', event);
 					cameraInfo.able = false;
 					camera.position.x += (event.clientX - cameraInfo.x) / 100;
 					camera.position.y += (event.clientY - cameraInfo.y) / 100;
 				}, false);
+				renderer.domElement.addEventListener('mousewheel', (event) => {
+					// console.log('threejs mousewheel', event);
+					camera.position.z += event.wheelDeltaY / 100;
+				}, false);
 				
 				document.body.appendChild( renderer.domElement );
 				
-				for (var i = 0; i < 100; ++i) {
+				for (var i = 0; i < 20; ++i) {
 					const color = 0x00ff00 + i * 0xf;
 					const geometry = new THREE.BoxGeometry( 1, 0.5, 1 );
 					const material = new THREE.MeshBasicMaterial( { color: color } );
@@ -173,9 +177,10 @@
 					scene.add( cube );
 				}
 				
-				camera.position.z = 40;
-				camera.position.x = newValue.x;
-				camera.position.y = newValue.y;
+				camera.position.z = 20;
+				camera.position.x = 20;
+				camera.position.y = -20;
+				camera.rotation.x = 0.785; // Π/4 = 45°
 				
 				renderer.setAnimationLoop( ( time ) => {
 					renderer.render( scene, camera );

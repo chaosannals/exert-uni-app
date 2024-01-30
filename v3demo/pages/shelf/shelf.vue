@@ -1,23 +1,28 @@
 <template>
-	<view ref="shelfView" id="aaa" :info="info" :change:info="shelf.render3d">
+	<view ref="shelfView" id="shelfRoot" :info="info" :change:info="shelf.render3d" @mousedown="onMouseDown" @mouseup="onMouseUp">
 		<view @click="shelf.callClickShelf">点击</view>
 	</view>
 </template>
 
 <script>
+	import fontData from '/static/helvetiker_regular.typeface.json';
+	
 	export default {
 		data() {
 			return {
 				info: {
 					width: 0,
 					height: 0,
+					x: 0,
+					y: 0,
+					fontData: fontData,
 				},
 			}
 		},
 		methods: {
 			onClickShelf(data) {
 				console.log('click shelf', data, this.$refs.shelfView);
-				const query = uni.createSelectorQuery().select('#aaa');
+				const query = uni.createSelectorQuery().select('#shelfRoot');
 				console.log('query', query);
 				query.fields({  
                     size: true,
@@ -28,16 +33,36 @@
 				query.boundingClientRect(rect => {
 					console.log('rect', rect);  
 				}).exec();
+			},
+			onMouseDown(event) {
+				// 由于在 threejs 的 canvas 之下，所以不会触发。
+				console.log('mousedown', event);
+			},
+			onMouseUp(event) {
+				// 由于在 threejs 的 canvas 之下，所以不会触发。
+				console.log('mouseup', event);
 			}
 		},
 		created() {
-			console.log(this.$refs.shelfView);
+			console.log('create', fontData);
+		},
+		mounted() {
+			uni.createSelectorQuery()
+				.select('#shelfRoot')
+				.boundingClientRect(rect => {
+					console.log('rect', rect);
+					this.info.width = rect.width;
+					this.info.height = rect.height;
+				}).exec();
 		}
 	}
 </script>
 
 <script module="shelf" lang="renderjs">
 	import * as THREE from 'three';
+	import WebGL from 'three/addons/capabilities/WebGL.js';
+	import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+	import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 	
 	export default {
 		data() {
@@ -48,7 +73,113 @@
 		methods: {
 			// 参数固定形式
 			render3d(newValue, oldValue, ownerInstance, instance) {
+				console.log('render3d', newValue);
 				
+				if (!WebGL.isWebGLAvailable() ) {
+					const warning = WebGL.getWebGLErrorMessage();
+					document.body.appendChild( warning );
+				}
+				
+				const scene = new THREE.Scene();
+				const camera = new THREE.PerspectiveCamera(
+					75, // 视野角度
+					window.innerWidth / window.innerHeight, // 长宽比
+					0.1, // 近截面
+					1000 // 远截面
+				);
+				
+				// 字体加载。
+				const loader = new FontLoader();
+				
+				// renderjs 直接使用路径只在 web 下有效。 app 会找不到文件。
+				// loader.load( '/static/helvetiker_regular.typeface.json', function ( font ) {
+				// 	const geometry = new TextGeometry( 'Hello three.js!', {
+				// 		font: font, // 字体
+				// 		size: 4, // 大小
+				// 		height: 0.05, // 挤出厚度
+				// 		curveSegments: 2, // 曲线上点数量
+				// 		bevelEnabled: true, // 斜角
+				// 		bevelThickness: 1,  // 斜角深度
+				// 		bevelSize: 0.8, // 斜角与原始轮廓距离
+				// 		bevelSegments: 1, // 斜角分段数
+				// 	} );
+				// 	const material = new THREE.MeshBasicMaterial( { color: 0xFF0000 } );
+				// 	const text = new THREE.Mesh( geometry, material );
+				// 	text.position.x = 1;
+				// 	text.position.y = 1;
+				// 	text.position.z = 2;
+				// 	scene.add( text );
+				// 	console.log('add text');
+				// } );
+				
+				const font = loader.parse(newValue.fontData);
+				const geometry = new TextGeometry( 'Hello three.js!', {
+					font: font, // 字体
+					size: 4, // 大小
+					height: 0.05, // 挤出厚度
+					curveSegments: 2, // 曲线上点数量
+					bevelEnabled: true, // 斜角
+					bevelThickness: 1,  // 斜角深度
+					bevelSize: 0.08, // 斜角与原始轮廓距离，粗细
+					bevelSegments: 1, // 斜角分段数
+				} );
+				const material = new THREE.MeshBasicMaterial( { color: 0xFF0000 } );
+				const text = new THREE.Mesh( geometry, material );
+				text.position.x = 1;
+				text.position.y = 1;
+				text.position.z = 2;
+				scene.add( text );
+				console.log('add text');
+				
+				const renderer = new THREE.WebGLRenderer();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.domElement.style.position = 'absolute';
+				renderer.domElement.style.top = '0';
+				// renderer.domElement.style.zIndex = '100';
+				renderer.domElement.style.left = '0';
+				const cameraInfo = {};
+				renderer.domElement.addEventListener('mousedown', (event) => {
+					console.log('threejs mousedown', event);
+					cameraInfo.x = event.clientX;
+					cameraInfo.y = event.clientY;
+					cameraInfo.able = true;
+				}, false);
+				renderer.domElement.addEventListener('mousemove', (event) => {
+					if (cameraInfo.able) {
+						console.log('threejs mousemove', event);
+						camera.position.x -= (event.clientX - cameraInfo.x) / 100;
+						camera.position.y += (event.clientY - cameraInfo.y) / 100;
+						cameraInfo.x = event.clientX;
+						cameraInfo.y = event.clientY;
+					}
+				}, false);
+				renderer.domElement.addEventListener('mouseup', (event) => {
+					console.log('threejs mouseup', event);
+					cameraInfo.able = false;
+					camera.position.x += (event.clientX - cameraInfo.x) / 100;
+					camera.position.y += (event.clientY - cameraInfo.y) / 100;
+				}, false);
+				
+				document.body.appendChild( renderer.domElement );
+				
+				for (var i = 0; i < 100; ++i) {
+					const color = 0x00ff00 + i * 0xf;
+					const geometry = new THREE.BoxGeometry( 1, 0.5, 1 );
+					const material = new THREE.MeshBasicMaterial( { color: color } );
+					const cube = new THREE.Mesh( geometry, material );
+					cube.position.x = i * 2;
+					cube.position.y = 0;
+					cube.position.z = 0;
+					scene.add( cube );
+				}
+				
+				camera.position.z = 40;
+				camera.position.x = newValue.x;
+				camera.position.y = newValue.y;
+				
+				renderer.setAnimationLoop( ( time ) => {
+					renderer.render( scene, camera );
+				});
 			},
 			// 参数固定形式
 			callClickShelf(event, ownerInstance) {
@@ -59,6 +190,9 @@
 	};
 </script>
 
-<style>
-
+<style scoped>
+#shelfRoot {
+	width: 100%;
+	height: 100%;
+}
 </style>

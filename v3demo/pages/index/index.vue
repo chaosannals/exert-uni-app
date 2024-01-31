@@ -1,10 +1,12 @@
 <template>
 	<view class="content">
-		<image class="logo" src="/static/logo.png" @click="onClick('/pages/shelf/shelf')"></image>
+		<image class="logo" src="/static/shelf_entry.png" @click="onClick('/pages/shelf/shelf')"></image>
 		<view class="text-area">
 			<text class="title">{{title}}</text>
 		</view>
-		<image class="logo" src="/static/logo.png" @click="onClick('/pages/three/three')"></image>
+		<image class="logo" src="/static/box_entry.png" @click="onClick('/pages/three/three')"></image>
+		<image class="logo" src="/static/logo.png" @click="onClick('/pages/modelbld/modelbld')"></image>
+		<image class="logo" src="/static/modelobj_entry.png" @click="onClick('/pages/modelobj/modelobj')"></image>
 	</view>
 </template>
 

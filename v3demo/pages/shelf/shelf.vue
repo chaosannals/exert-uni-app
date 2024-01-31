@@ -1,6 +1,7 @@
 <template>
 	<view ref="shelfView" id="shelfRoot" :info="info" :change:info="shelf.render3d" @mousedown="onMouseDown" @mouseup="onMouseUp">
 		<view @click="shelf.callClickShelf">点击</view>
+		<view ref="d3d" @click="shelf.dispose3d"></view>
 	</view>
 </template>
 
@@ -47,14 +48,24 @@
 			console.log('create', fontData);
 		},
 		mounted() {
+			console.log('mounted');
 			uni.createSelectorQuery()
 				.select('#shelfRoot')
 				.boundingClientRect(rect => {
 					console.log('rect', rect);
 					this.info.width = rect.width;
 					this.info.height = rect.height;
+					// 这里不能直接调用 shelf.render3d，而要通过 修改 info 触发。
 				}).exec();
-		}
+		},
+		// 不触发
+		// beforeDestroy() {
+		// 	console.log('shelf beforeDestroy');
+		// }
+		onUnload() {
+			console.log('onUnload', this.$refs.d3d.$emit('click'));
+			
+		},
 	}
 </script>
 
@@ -67,7 +78,8 @@
 	export default {
 		data() {
 			return {
-				
+				scene: null,
+				renderer: null,
 			}
 		},
 		methods: {
@@ -223,12 +235,21 @@
 				renderer.setAnimationLoop( ( time ) => {
 					renderer.render( scene, camera );
 				});
+				
+				this.renderer = renderer;
+				this.scene = scene;
 			},
 			// 参数固定形式
 			callClickShelf(event, ownerInstance) {
 				// 这个只能找到 vue2 形式定义在 methods 的方法。
 				ownerInstance.callMethod('onClickShelf', { content: 'test' });
-			}
+			},
+			
+			dispose3d() {
+				console.log('dispose3d');
+				this.scene.remove(this.renderer);
+				this.renderer.dispose();
+			},
 		},
 	};
 </script>

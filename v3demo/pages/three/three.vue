@@ -7,11 +7,12 @@
 </template>
 
 <script setup>
-	import {onMounted, reactive, ref} from 'vue';
+	import {onBeforeUnmount, onMounted, reactive, ref} from 'vue';
 	
 	const info = reactive({
 		width: 0,
 		height: 0,
+		isEnd: false,
 	});
 	
 	onMounted(() => {
@@ -22,6 +23,11 @@
 				console.log('start', info);
 			}
 		});
+	});
+	
+	onBeforeUnmount(() => {
+		console.log('onBeforeUnmount');
+		info.isEnd = true;
 	});
 	
 	// vue3 下面 renderjs 无法通过 ownerInstance.callMethod 调用到
@@ -45,13 +51,19 @@
 	export default {
 		data() {
 			return {
-				
+				scene: null,
+				renderer: null,
 			}
 		},
 		methods: {
 			// 参数固定形式
 			render3d(newValue, oldValue, ownerInstance, instance) {
 				console.log('start', newValue, oldValue);
+				
+				if (newValue.isEnd) {
+					this.destroy();
+					return;
+				}
 				
 				const width = newValue.width;
 				const height = newValue.height;
@@ -83,10 +95,16 @@
 				// renderer.domElement.style.zIndex = '100';
 				renderer.domElement.style.left = '0';
 				document.body.appendChild( renderer.domElement );
+				this.renderer = renderer;
+				this.scene = scene;
 			},
 			callFor3d(event, ownerInstance) {
 				const r = ownerInstance.callMethod('forThree3d', { content: 'test' });
 				console.log('aaa', r);
+			},
+			destroy() {
+				this.scene.remove(this.renderer);
+				this.renderer.dispose();
 			}
 		},
 		created() {

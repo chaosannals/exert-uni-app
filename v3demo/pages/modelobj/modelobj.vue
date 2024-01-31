@@ -74,6 +74,8 @@
 				console.log('load obj start.');
 				const manager = new THREE.LoadingManager();
 				
+				// 网上有种做法是把文件传服务器上，因为是 HTTP ，所以就可以不用转换了。
+				// 使用本地文件要跨平台转换路径。
 				// 不同平台路径不一致，获取转换的函数又是异步的。
 				// TODO 做一个资源表，提前转换好。
 				const textureOrigin = 'data:application/shelf.png';

@@ -92,6 +92,9 @@
 					document.body.appendChild( warning );
 				}
 				
+				const raycaster = new THREE.Raycaster();
+				const pointer = new THREE.Vector2();
+				
 				const scene = new THREE.Scene();
 				const camera = new THREE.PerspectiveCamera(
 					75, // 视野角度
@@ -156,6 +159,17 @@
 					cameraInfo.x = event.clientX;
 					cameraInfo.y = event.clientY;
 					cameraInfo.able = true;
+					
+					// 点击判定
+					console.log('rayhit mouse start', scene.children.length);
+					pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+					pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+					raycaster.setFromCamera( pointer, camera );
+					const intersects = raycaster.intersectObjects(scene.children);
+					for ( let i = 0; i < intersects.length; i ++ ) {
+						console.log('rayhit:', i);
+						intersects[ i ].object.material.color.set( 0xff0000);
+					}
 				}, false);
 				renderer.domElement.addEventListener('touchstart', (event) => {
 					cameraInfo.able = true;
@@ -163,6 +177,18 @@
 						const touch = event.targetTouches[0];
 						cameraInfo.x = touch.clientX;
 						cameraInfo.y = touch.clientY;
+						
+						// 触碰判定
+						console.log('rayhit touch start', scene.children.length);
+						pointer.x = ( touch.clientX / window.innerWidth ) * 2 - 1;
+						pointer.y = - ( touch.clientY / window.innerHeight ) * 2 + 1;
+						
+						raycaster.setFromCamera( pointer, camera );
+						const intersects = raycaster.intersectObjects(scene.children);
+						for ( let i = 0; i < intersects.length; i ++ ) {
+							console.log('rayhit:', i);
+							intersects[ i ].object.material.color.set( 0xff0000);
+						}
 					}
 					if (event.targetTouches.length == 2) {
 						const touch1 = event.targetTouches[0];

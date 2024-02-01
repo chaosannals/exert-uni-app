@@ -1,5 +1,5 @@
 <template>
-	<view ref="shelfView" id="shelfRoot" :info="info" :change:info="shelf.render3d" @mousedown="onMouseDown" @mouseup="onMouseUp">
+	<view ref="shelfView" id="shelfRoot" :info="info" :change:info="shelf.render3d" @mousedown="onMouseDown" @mouseup="onMouseUp" style="width: 100%; height: 100%">
 		<view @click="shelf.callClickShelf">点击</view>
 		<view ref="d3d" @click="shelf.dispose3d"></view>
 	</view>
@@ -86,6 +86,7 @@
 			// 参数固定形式
 			render3d(newValue, oldValue, ownerInstance, instance) {
 				console.log('render3d', newValue);
+				// return;
 				
 				if (!WebGL.isWebGLAvailable() ) {
 					const warning = WebGL.getWebGLErrorMessage();
@@ -98,7 +99,8 @@
 				const scene = new THREE.Scene();
 				const camera = new THREE.PerspectiveCamera(
 					75, // 视野角度
-					window.innerWidth / window.innerHeight, // 长宽比
+					// window.innerWidth / window.innerHeight, // 长宽比
+					newValue.width / newValue.height, // 长宽比
 					0.1, // 近截面
 					1000 // 远截面
 				);
@@ -148,11 +150,17 @@
 				console.log('add text');
 				
 				const renderer = new THREE.WebGLRenderer();
-				renderer.setSize( window.innerWidth, window.innerHeight );
+				// renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setSize( newValue.width, newValue.height );
 				renderer.domElement.style.position = 'absolute';
 				renderer.domElement.style.top = '0';
 				// renderer.domElement.style.zIndex = '100';
 				renderer.domElement.style.left = '0';
+				
+				document.body.appendChild( renderer.domElement );
+				const bounding = renderer.domElement.getBoundingClientRect();
+				console.log('bounding', bounding); // renderer.domElement 没有挂在到 body 前全是 0
+				
 				const cameraInfo = {};
 				renderer.domElement.addEventListener('mousedown', (event) => {
 					// console.log('threejs mousedown', event);
@@ -162,8 +170,13 @@
 					
 					// 点击判定
 					console.log('rayhit mouse start', scene.children.length);
-					pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-					pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+					// pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+					// pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+					// pointer.x = ( event.clientX / newValue.width ) * 2 - 1;
+					// pointer.y = - ( event.clientY / newValue.height ) * 2 + 1;
+					pointer.x = ((event.clientX - bounding.left) / bounding.width) * 2 - 1;
+					pointer.y = - ((event.clientY - bounding.top) / bounding.height) * 2 + 1;
+					
 					raycaster.setFromCamera( pointer, camera );
 					const intersects = raycaster.intersectObjects(scene.children);
 					for ( let i = 0; i < intersects.length; i ++ ) {
@@ -180,8 +193,12 @@
 						
 						// 触碰判定
 						console.log('rayhit touch start', scene.children.length);
-						pointer.x = ( touch.clientX / window.innerWidth ) * 2 - 1;
-						pointer.y = - ( touch.clientY / window.innerHeight ) * 2 + 1;
+						// pointer.x = ( touch.clientX / window.innerWidth ) * 2 - 1;
+						// pointer.y = - ( touch.clientY / window.innerHeight ) * 2 + 1;
+						// pointer.x = ( touch.clientX / newValue.width ) * 2 - 1;
+						// pointer.y = - ( touch.clientY / newValue.height ) * 2 + 1;
+						pointer.x = ((touch.clientX - bounding.left) / bounding.width) * 2 - 1;
+						pointer.y = - ((touch.clientY - bounding.top) / bounding.height) * 2 + 1;
 						
 						raycaster.setFromCamera( pointer, camera );
 						const intersects = raycaster.intersectObjects(scene.children);
@@ -237,7 +254,7 @@
 					camera.position.z += event.wheelDeltaY / 100;
 				}, false);
 				
-				document.body.appendChild( renderer.domElement );
+				// document.body.appendChild( renderer.domElement );
 				
 				for (var j = 0; j < 20; ++j) {
 					for (var i = 0; i < 20; ++i) {
@@ -281,6 +298,10 @@
 </script>
 
 <style scoped>
+	page {
+		height: 100%;
+	}
+	
 #shelfRoot {
 	width: 100%;
 	height: 100%;

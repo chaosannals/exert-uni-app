@@ -4,9 +4,10 @@
 		onShow,
 		onHide,
 	} from '@dcloudio/uni-app';
+	import routeIntercept from '@/route.js';
 	
 	const version = '1.0.0';
-	const host = '192.168.1.195:30000';
+	const host = '192.168.1.195:30000'; // v3demod 
 	const androidCheckUpdate = () => {
 		uni.request({
 			url: `http://${host}/version`,
@@ -72,7 +73,8 @@
 					androidCheckUpdate();
 				}
 			}
-		})
+		});
+		routeIntercept();
 	});
 	onShow(() => {
 		console.log('App Show')

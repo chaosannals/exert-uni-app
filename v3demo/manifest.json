@@ -21,6 +21,8 @@
         "modules" : {},
         /* 应用发布信息 */
         "distribute" : {
+			// 这个配置好像没有意义，只要调用 plus.screen.lockOrientation('portrait-primary');
+			// "orientation" : ["portrait-primary" ], //重力感应、横竖屏配置 
             /* android打包配置 */
             "android" : {
                 "permissions" : [

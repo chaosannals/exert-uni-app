@@ -75,6 +75,7 @@
 			}
 		});
 		routeIntercept();
+		plus.screen.lockOrientation('portrait-primary');
 	});
 	onShow(() => {
 		console.log('App Show')

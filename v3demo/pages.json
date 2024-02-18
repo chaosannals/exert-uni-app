@@ -40,6 +40,9 @@
 		}
 	],
 	"globalStyle": {
+		// 这个配置好像没有意义，只要调用 plus.screen.lockOrientation('portrait-primary');
+		// "pageOrientation": "portrait", // 竖屏 还要改 manifest.json
+		// "pageOrientation": "landscape", // 横屏
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",

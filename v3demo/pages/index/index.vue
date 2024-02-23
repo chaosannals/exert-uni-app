@@ -8,6 +8,7 @@
 		<image class="logo" src="/static/logo.png" @click="onClick('/pages/modelbld/modelbld')"></image>
 		<image class="logo" src="/static/modelobj_entry.png" @click="onClick('/pages/modelobj/modelobj')"></image>
 		<image class="logo" src="/static/logo.png" @click="onClick('/pages/overlaydemo/overlaydemo')"></image>
+		<image class="logo" src="/static/logo.png" @click="onClick('/pages/scrolldemo/scrolldemo')"></image>
 	</view>
 </template>
 

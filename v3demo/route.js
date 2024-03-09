@@ -1,4 +1,8 @@
 // 这几个方法因为都有相同的 url 参数，所以才能共用一份代码
+// 这种做法不妥当，这 4 个函数有不同的特性。
+// switchTab 只能切换注册了 tabbars 的 路由。
+// 这样合并后还是需要区分各种函数区别对待。
+// TODO 更好的做法是把路由相似的代码封装，然后分别 hook 这4个方法，做区别对待。
 const ROUTE_NAV_FUNC = [
 	'navigateTo',
 	'redirectTo',

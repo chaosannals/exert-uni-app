@@ -21,8 +21,8 @@
         "modules" : {},
         /* 应用发布信息 */
         "distribute" : {
-			// 这个配置好像没有意义，只要调用 plus.screen.lockOrientation('portrait-primary');
-			// "orientation" : ["portrait-primary" ], //重力感应、横竖屏配置 
+            // 这个配置好像没有意义，只要调用 plus.screen.lockOrientation('portrait-primary');
+            // "orientation" : ["portrait-primary" ], //重力感应、横竖屏配置 
             /* android打包配置 */
             "android" : {
                 "permissions" : [
@@ -50,6 +50,29 @@
             /* SDK配置 */
             "sdkConfigs" : {
                 "ad" : {}
+            }
+        },
+        "nativePlugins" : {
+            "uacarlib" : {
+                "插件需要配置的参数名称, 如appid" : "",
+                "__plugin_info__" : {
+                    "name" : "测试插件名",
+                    "description" : "插件描述信息",
+                    "platforms" : "Android",
+                    "url" : "",
+                    "android_package_name" : "",
+                    "ios_bundle_id" : "",
+                    "isCloud" : false,
+                    "bought" : -1,
+                    "pid" : "",
+                    "parameters" : {
+                        "插件需要配置的参数名称, 如appid" : {
+                            "des" : "参数描述",
+                            "key" : "AndroidManifest.xml中添加meta-data节点！对应android:name属性值, 如GETUI_APPID",
+                            "value" : ""
+                        }
+                    }
+                }
             }
         }
     },

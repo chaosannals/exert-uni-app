@@ -8,7 +8,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/DCloudTheme">
-        <meta-data android:name="dcloud_appkey" android:value="NA0EB3211"/>
+        <meta-data android:name="dcloud_appkey" android:value="__UNI__A0640C0"/>
+        <!--provider节点必须添加-->
+        <provider
+            android:name="io.dcloud.common.util.DCloud_FileProvider"
+            android:authorities="${applicationId}.dc.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/dcloud_file_provider" />
+        </provider>
         <activity
             android:name="io.dcloud.PandoraEntry"
             android:configChanges="orientation|keyboardHidden|keyboard|navigation"
@@ -30,7 +40,8 @@
                 <data android:scheme=" " />
             </intent-filter>
         </activity>
-        <activity android:name="io.dcloud.PandoraEntryActivity"
+        <activity
+            android:name="io.dcloud.PandoraEntryActivity"
             android:launchMode="singleTask"
             android:configChanges="orientation|keyboardHidden|screenSize|mcc|mnc|fontScale|keyboard|smallestScreenSize|screenLayout|screenSize|uiMode"
             android:hardwareAccelerated="true"

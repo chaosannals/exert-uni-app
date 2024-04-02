@@ -1,5 +1,6 @@
 <template>
 	<view class="content">
+		<image class="logo" src="/static/logo.png" @click="onClick('/pages/vconsoledemo/vconsoledemo')"></image>
 		<image class="logo" src="/static/logo.png" @click="onClick('/pages/useandplus/useandplus')"></image>
 		<image class="logo" src="/static/logo.png" @click="onClick('/pages/cantin/cantin')"></image>
 		<image class="logo" src="/static/shelf_entry.png" @click="onClick('/pages/shelf/shelf')"></image>

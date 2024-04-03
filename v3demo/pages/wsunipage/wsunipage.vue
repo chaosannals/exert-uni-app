@@ -11,8 +11,16 @@
 	uni.onSocketError((res) => {
 		console.log('socket error', res, JSON.stringify(res));
 	});
+	// 这个名字叫 AddSocketMessageListen 更合适，可以挂多个的。
+	// 叫这名字太误导了。
 	uni.onSocketMessage((res) => {
-		console.log('socket message', res, JSON.stringify(res));
+		console.log('socket message1', res, JSON.stringify(res));
+	});
+	uni.onSocketMessage((res) => {
+		console.log('socket message2', res, JSON.stringify(res));
+	});
+	uni.onSocketMessage((res) => {
+		console.log('socket message3', res, JSON.stringify(res));
 	});
 	uni.onSocketClose((res) => {
 		console.log('socket close', res, JSON.stringify(res));

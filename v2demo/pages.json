@@ -12,6 +12,13 @@
 			"navigationBarTitleText" : "",
 			"enablePullDownRefresh" : false
 		}
+	},
+	{
+		"path" : "pages/addinput/addinput",
+		"style" : 
+		{
+			"navigationBarTitleText" : ""
+		}
 	}],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

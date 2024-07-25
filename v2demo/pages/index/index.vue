@@ -1,9 +1,9 @@
 <template>
 	<view class="container">
-		
 		<view class="intro" @click="onClick">renderjs</view>
 		<text class="intro">详见：</text>
 		<uni-link :href="href" :text="href"></uni-link>
+		<view  @click="onClickTo('/pages/addinput/addinput')">addinput</view>
 	</view>
 </template>
 
@@ -18,6 +18,12 @@
 			onClick() {
 				uni.navigateTo({
 					url: '/pages/render/render'
+				})
+			},
+			onClickTo(link) {
+				console.log("to", link);
+				uni.navigateTo({
+					url: link
 				})
 			}
 		}
